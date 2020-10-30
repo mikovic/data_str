@@ -1,6 +1,7 @@
 package ru.mikovic.model;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public  class Entity {
     private String name;
@@ -16,8 +17,8 @@ public  class Entity {
         this.title = title;
     }
     public void display(){
-
         System.out.println(getTitle() + " " + getName() + " " + getValue() + " чел." );
+
     }
 
     public String getName() {
@@ -41,5 +42,9 @@ public  class Entity {
 
     public int getValue() {
         return value;
+    }
+
+    public ArrayList<UnluckyVassal> getVassals() {
+        return vassals;
     }
 }

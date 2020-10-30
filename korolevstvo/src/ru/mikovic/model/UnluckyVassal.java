@@ -3,10 +3,13 @@ package ru.mikovic.model;
 
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class UnluckyVassal extends Entity {
 
     private King owner;
+    private boolean sluga = false;
+
 
     public UnluckyVassal() {
         super();
@@ -20,6 +23,42 @@ public class UnluckyVassal extends Entity {
         this.owner = owner;
     }
 
+    public boolean isSluga() {
+        return sluga;
+    }
+
+    public void setSluga(boolean sluga) {
+        this.sluga = sluga;
+    }
+
+    public void display() {
+        super.display();
+        if (this.getVassals() != null) {
+            pr(this.getVassals(), n);
+        }
+
+    }
+    String n =" ";
+    String b =" ";
+    private void pr(List<UnluckyVassal> lt, String n){
+
+            List<UnluckyVassal> list =  lt.stream().sorted(Comparator.comparing(UnluckyVassal :: getTitle)).collect(Collectors.toList());
+            for (UnluckyVassal v: list){
+                String str = v.getTitle() + " " + v.getName();
+                String formatted = str;
+                System.out.println(n +str);
+                if (v.getVassals()!= null) {
+                    n = n + b;
+                    pr(v.getVassals(), n);
+
+                }
+                if (v.getVassals()!= null) n =" ";
+            }
+
+        }
+
+
+
     public void printReportForKing(List<String> pollResults) {
         UnluckyVassal unluckyVassal = null;
         String[] arr = null;
@@ -31,14 +70,16 @@ public class UnluckyVassal extends Entity {
                String[] vas = arr[1].split(",");
                 for(int i = 0; i < vas.length; i++){
                     UnluckyVassal vassal = getVassal(vas[i]);
+                    vassal.setSluga(true);
                     unluckyVassal.add(vassal);
                 }
             }
-            owner.getReport().add(unluckyVassal);
+
 
         }
         owner.display();
-        owner.getReport().stream().sorted(Comparator.comparing(UnluckyVassal::getValue).reversed())
+        List<UnluckyVassal> result =  owner.getReport().stream().filter(x-> x.isSluga()==false).collect(Collectors.toList());
+        result.stream().sorted(Comparator.comparing(UnluckyVassal::getTitle))
                 .forEach(vassal -> vassal.display());
 
 
@@ -64,6 +105,7 @@ public class UnluckyVassal extends Entity {
                 .findAny().orElse(null);
         if(vassal == null) {
             vassal = new UnluckyVassal(name, title);
+            owner.getReport().add(vassal);
 
         }
 
